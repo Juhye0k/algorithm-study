@@ -10,7 +10,7 @@ public class Main {  // 백준 32377
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         StringTokenizer st=new StringTokenizer(br.readLine());
-        String result="";
+
         int N=Integer.parseInt(st.nextToken()); // 풍선의 개수
         int x=Integer.parseInt(st.nextToken());
         int y=Integer.parseInt(st.nextToken());
@@ -38,20 +38,18 @@ public class Main {  // 백준 32377
         if(time%x==0){
             diff--;
             if(diff==0)
-                result="A win";
-
+                bw.write("A win");
         }
         if(time%y==0){
             diff--;
             if(diff==0)
-                result="B win";
+                bw.write("B win");
         }
         if(time%z==0){
             diff--;
             if(diff==0)
-                result="C win";
+                bw.write("C win");
         }
-        bw.write(result);
         bw.flush();
         bw.close();
     }
