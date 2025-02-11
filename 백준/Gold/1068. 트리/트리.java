@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 
 public class Main {
     static List<List<Integer>> graph;
-    static boolean visited[];
     static int result;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,7 +19,6 @@ public class Main {
         for(int i=0;i<N;i++){
             graph.add(new ArrayList<>());
         }
-        visited=new boolean[N];
         for(int i=0;i<N;i++){
             int num=Integer.parseInt(st.nextToken());  // i번 노드의 부모 입력
             if(num==-1)                                // 루트 노드일 때 --> DFS 시작점으로 설정
@@ -41,7 +39,6 @@ public class Main {
     public static void dfs(int start, int delNum){
         if(start==delNum)
             return;
-        visited[start]=true;
         int childCount=0;
         for(int i:graph.get(start)){               // 연결된 정점 탐색 ㄱㄱ
             if(i==delNum)
