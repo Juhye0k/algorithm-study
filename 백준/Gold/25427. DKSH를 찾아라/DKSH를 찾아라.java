@@ -17,8 +17,8 @@ public class Main {
 
         String s =  br.readLine();
 
-        int d = 0,dk=0,dks=0, dksh =0;
-        int result = 0 ;
+        long d = 0,dk=0,dks=0, dksh =0;
+        long result = 0 ;
         for(int i=0; i<N; i++) {
             char temp = s.charAt(i);
             if(temp=='D')
