@@ -27,7 +27,7 @@ public class Main {
         dp1[1][1] = -1;
         for(int i=1; i<N; i++) {
             dp1[i+1][1] = dp1[i][0] + 1;
-            dp1[i+1][0] = Math.max(dp1[i][0], dp1[i][1]+ar[i+1]);
+            dp1[i+1][0] = Math.max(dp1[i][0], dp1[i][1]) + ar[i+1];
         }
         long ans1 = Math.max(dp1[N][0], dp1[N][1]);
 
@@ -35,7 +35,7 @@ public class Main {
         dp2[1][0] = -1;
         dp2[1][1] = 1;
         for(int i=1; i<N; i++) {
-            dp2[i+1][0] = Math.max(dp2[i][1], dp2[i][0]+ar[i]);
+            dp2[i+1][0] = Math.max(dp2[i][1], dp2[i][0])+ar[i+1];
             dp2[i+1][1] = dp2[i][0] + 1;
         }
         long ans2 = dp2[N][0];
