@@ -1,48 +1,83 @@
 import java.util.*;
-class Node implements Comparable<Node>{
+
+class Node implements Comparable<Node> {
+
     int id;
     int count;
+
     public Node(int id, int count) {
-        this.id=id;
-        this.count=count;
+        this.id = id;
+        this.count = count;
     }
+
     @Override
-    public int compareTo(Node o){
-        if(this.count==o.count) {
-            return this.id-o.id;
+    public int compareTo(Node other) {
+        // 재생 횟수가 같으면 고유 번호가 낮은 순서
+        if (this.count == other.count) {
+            return Integer.compare(this.id, other.id);
         }
-        return o.count-this.count;
+
+        // 재생 횟수가 많은 순서
+        return Integer.compare(other.count, this.count);
     }
 }
-class Solution {
-    public List<Integer> solution(String[] genres, int[] plays) {
-        List<Integer> answer = new LinkedList<>();
-        // 가장 많이 재생된 장르
-        Map<String,Integer> count = new HashMap<>();
-        Map<String,List<Node>> list = new HashMap<>();
-        for(int i=0; i<genres.length; i++) {
-            // 노래 리스트에 넣기
-            // 장르 카운트에 넣기
-            count.put(genres[i],count.getOrDefault(genres[i],0)+plays[i]);
-            list.putIfAbsent(genres[i],new ArrayList<>());
-            list.get(genres[i]).add(new Node(i,plays[i]));
 
+class Solution {
+
+    public int[] solution(String[] genres, int[] plays) {
+        List<Integer> answer = new ArrayList<>();
+
+        // 장르별 전체 재생 횟수
+        Map<String, Integer> genrePlayCount = new HashMap<>();
+
+        // 장르별 노래 목록
+        Map<String, List<Node>> songsByGenre = new HashMap<>();
+
+        for (int i = 0; i < genres.length; i++) {
+            String genre = genres[i];
+            int playCount = plays[i];
+
+            // 장르별 전체 재생 횟수 누적
+            genrePlayCount.put(
+                genre,
+                genrePlayCount.getOrDefault(genre, 0) + playCount
+            );
+
+            // 장르별 노래 목록에 현재 노래 추가
+            songsByGenre
+                .computeIfAbsent(genre, key -> new ArrayList<>())
+                .add(new Node(i, playCount));
         }
-        // 장르 내에서 많이 재생된 노래
-        List<String> sortedGenres = new ArrayList<>(count.keySet());
-        sortedGenres.sort((a,b)->count.get(b)-count.get(a));
-        int index=0;
-        for(String genre : sortedGenres) {
-                List<Node> songs=list.get(genre);
+
+        // 장르 이름을 리스트로 만든다.
+        List<String> genreOrder = new ArrayList<>(genrePlayCount.keySet());
+
+        // 전체 재생 횟수가 많은 장르 순서로 정렬
+        genreOrder.sort(
+            (genre1, genre2) -> Integer.compare(
+                genrePlayCount.get(genre2),
+                genrePlayCount.get(genre1)
+            )
+        );
+
+        for (String genre : genreOrder) {
+            List<Node> songs = songsByGenre.get(genre);
+
+            // 장르 안에서 재생 횟수 내림차순,
+            // 재생 횟수가 같으면 고유 번호 오름차순
             Collections.sort(songs);
-            int cnt=0;
-            for(Node song : songs) {
-                if(cnt == 2) break; 
-                answer.add(song.id); 
-                cnt++;
+
+            // 첫 번째 노래
+            answer.add(songs.get(0).id);
+
+            // 노래가 2개 이상이면 두 번째 노래도 추가
+            if (songs.size() >= 2) {
+                answer.add(songs.get(1).id);
             }
-            
         }
-        return answer;
+
+        return answer.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
     }
 }
