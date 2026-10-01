@@ -1,13 +1,18 @@
 import java.util.*;
 
 public class Solution {
-    public List<Integer> solution(int []arr) {
-        List<Integer> answer = new LinkedList<>();
+    public int[] solution(int []arr) {
+        int[] answer = {};
         Stack<Integer> stack = new Stack<>();
-        for(int i=0; i<arr.length; i++) {
-            if(!stack.isEmpty() && stack.peek()==arr[i]) continue;
-            stack.add(arr[i]);
-            answer.add(arr[i]);
+        stack.push(arr[0]);
+        for(int i=1; i<arr.length; i++) {
+            if(!stack.isEmpty() && stack.peek()!=arr[i]) {
+                stack.push(arr[i]);
+            }
+        }
+        answer = new int[stack.size()];
+        for(int i=stack.size()-1; i>=0; i--) {
+            answer[i] = stack.pop();
         }
         return answer;
     }
