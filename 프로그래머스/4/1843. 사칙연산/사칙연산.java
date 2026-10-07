@@ -1,47 +1,54 @@
 import java.util.*;
+
 class Solution {
-    public int solution(String arr[]) {
-        int answer = -1;
-        int n = arr.length;
-        int[] nums = new int[n]; // 숫자를 저장하기 위한 배열
-        char[] ops = new char[n-1]; // 연산자를 저장하기 위한 배열
-        
-        int ni = 0, oi = 0;
-        for(int i=0; i<arr.length; i++) {
-            if(i%2==0) {
-                nums[ni++] = Integer.parseInt(arr[i]);
-            }
-            else {
-                ops[oi++] = arr[i].charAt(0);
-            }
+    public int solution(String[] arr) {
+        int n = (arr.length + 1) / 2;
+
+        int[][] max = new int[n][n];
+        int[][] min = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(max[i], Integer.MIN_VALUE);
+            Arrays.fill(min[i], Integer.MAX_VALUE);
+
+            int number = Integer.parseInt(arr[i * 2]);
+            max[i][i] = number;
+            min[i][i] = number;
         }
-        int[][] dpMax = new int[n][n];
-        int[][] dpMin = new int[n][n];
-        
-        for(int i=0; i<n; i++) {
-            Arrays.fill(dpMax[i], Integer.MIN_VALUE);
-            Arrays.fill(dpMin[i], Integer.MAX_VALUE);
-            dpMax[i][i] = nums[i];
-            dpMin[i][i] = nums[i];
-        }
-        for(int len=1; len<n; len++) {
-            for(int i=0; i+len<n; i++) {
-                int j=i+len;
-                
-                for(int k=i; k<j; k++) {
-                    char op = ops[k];
-                    
-                    if(op=='+') {
-                        dpMax[i][j] = Math.max(dpMax[i][j], dpMax[i][k] +dpMax[k+1][j]);
-                        dpMin[i][j] = Math.min(dpMin[i][j],dpMin[i][k]+dpMin[k+1][j]);
-                    }
-                    else {
-                            dpMax[i][j] = Math.max(dpMax[i][j], dpMax[i][k]-dpMin[k+1][j]);
-                            dpMin[i][j] = Math.min(dpMin[i][j],dpMin[i][k]-dpMax[k+1][j]);
+
+        // 짧은 구간부터 계산
+        for (int length = 2; length <= n; length++) {
+            for (int i = 0; i <= n - length; i++) {
+                int j = i + length - 1;
+
+                // k번째 숫자 뒤의 연산자를 마지막에 계산
+                // 왼쪽 구간: [i, k], 오른쪽 구간: [k + 1, j]
+                for (int k = i; k < j; k++) {
+                    String operator = arr[k * 2 + 1];
+
+                    if (operator.equals("+")) {
+                        max[i][j] = Math.max(
+                            max[i][j],
+                            max[i][k] + max[k + 1][j]
+                        );
+                        min[i][j] = Math.min(
+                            min[i][j],
+                            min[i][k] + min[k + 1][j]
+                        );
+                    } else {
+                        max[i][j] = Math.max(
+                            max[i][j],
+                            max[i][k] - min[k + 1][j]
+                        );
+                        min[i][j] = Math.min(
+                            min[i][j],
+                            min[i][k] - max[k + 1][j]
+                        );
                     }
                 }
             }
         }
-        return dpMax[0][n - 1];
+
+        return max[0][n - 1];
     }
 }
