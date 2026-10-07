@@ -1,25 +1,63 @@
 import java.util.*;
 class Solution {
-    static  Map<String,PriorityQueue<String>> map;
-    static List<String> route = new ArrayList<>();
-    public String[] solution(String[][] tickets) {
-        String[] answer = {};
+    static Map<String, List<String>> map;
+    static List<String> answer;
+    static Map<String, boolean[]> used;
+    static int ticketCount;
+
+
+    public List<String> solution(String[][] tickets) {
+        answer = new LinkedList<>();
         map = new HashMap<>();
-        for(String[] ticket:tickets) {
-            map.putIfAbsent(ticket[0],new PriorityQueue<>());
-            map.get(ticket[0]).offer(ticket[1]);
+        used = new HashMap<>();
+        ticketCount = tickets.length;
+
+        for(int i=0; i< tickets.length; i++) {
+            String from = tickets[i][0];
+            String to = tickets[i][1];
+            
+            if(!map.containsKey(from)) {
+                map.put(from, new ArrayList<>());
+            }
+            map.get(from).add(to);
         }
-        dfs("ICN");
-        Collections.reverse(route);
-        return route.toArray(new String[0]);
-    }
-    public static void dfs(String now) {
-        PriorityQueue<String> pq = map.get(now);
-        while(pq!=null && !pq.isEmpty()) {
-            String next = pq.poll();
-            dfs(next);
+        for(List<String> destinations : map.values()) {
+            Collections.sort(destinations);
         }
-        route.add(now);
+        for (String from : map.keySet()) {
+    used.put(from, new boolean[map.get(from).size()]);
+}
+        String start = "ICN";
+        
+        answer.add(start);
+        dfs(start,0);
+        return answer;
     }
-    
+    public static boolean dfs(String start, int count) {
+        if (count == ticketCount) {
+            return true;
+        }
+        if (!map.containsKey(start)) {
+              return false;
+        }
+        List<String> destinations = map.get(start);
+        boolean[] visited = used.get(start);
+        
+        for(int i=0; i<destinations.size(); i++) {
+            if(visited[i]) {
+                continue;
+            }
+            
+            String destination = destinations.get(i);
+            
+            visited[i] = true;
+            answer.add(destination);
+            if(dfs(destination, count+1)) {
+                return true;
+            }
+            visited[i] = false;
+            answer.remove(answer.size()-1);
+        }
+        return false;
+    }
 }
