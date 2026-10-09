@@ -1,37 +1,48 @@
 import java.util.*;
 class Node {
-    int index;
     int value;
-    public Node(int index, int value){
-        this.index=index;
-        this.value=value;
+    int location;
+    public Node (int value, int location) {
+        this.value= value;
+        this.location = location;
     }
 }
 class Solution {
     public int solution(int[] priorities, int location) {
-        Queue<Node> queue = new LinkedList<>();
-        PriorityQueue<Integer> q = new PriorityQueue<>(Collections.reverseOrder());
         int answer = 0;
+        /*
+        A B C D 
+        B C D A
+        C D A B
+        D A B
+        A B
+        B
+        C -> D -> A -> B
+        */
+        Queue<Node> q = new LinkedList<>();
         for(int i=0; i<priorities.length; i++) {
-            queue.add(new Node(i,priorities[i]));
-            q.add(priorities[i]);
+            q.add(new Node(priorities[i],i));
         }
+        int max = Integer.MIN_VALUE;
         int count = 0;
-        while(!queue.isEmpty()) {
-            Node temp = queue.poll();
-            int num = q.peek();
-            if(temp.value<num) {
-                queue.add(temp);
-            }
-            else {
-                q.poll();
-                count++;
-                if(location==temp.index) {
-                    answer = count;
+        while(!q.isEmpty()) {
+            Node temp = q.poll();
+            boolean hasHigher = false;
+            for(Node process : q) {
+                if(process.value>temp.value) {
+                    hasHigher = true;
                     break;
                 }
             }
+            if(hasHigher) {
+                q.offer(temp);
+            } else {
+                count ++;
+                if(temp.location == location) 
+                    return count;
+            }
         }
-        return answer;
+        
+        return count;
     }
 }
