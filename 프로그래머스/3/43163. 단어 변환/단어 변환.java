@@ -1,42 +1,34 @@
 import java.util.*;
-class Node{
-    String str;
-    int count;
-    public Node(String str, int count) {
-        this.str = str;
-        this.count = count;
-    }
-}
 class Solution {
+    static Set<String> set;
+    static int answer;
     public int solution(String begin, String target, String[] words) {
-        int answer = 0;
-        answer = bfs(begin,target,words);
+        answer = Integer.MAX_VALUE;;
+        set = new HashSet<>();
+        dfs(begin, target, words, 0);
+        if(answer == Integer.MAX_VALUE) answer = 0;
         return answer;
     }
-    public static int bfs(String begin, String target, String[] words) {
-        Set<String> set = new HashSet<>();
-        set.add(begin);
-        Queue<Node> q = new LinkedList<>();
-        q.add(new Node(begin,0));
-        while(!q.isEmpty()) {
-            Node temp = q.poll();
-            String s = temp.str;
-            if(s.equals(target)) return temp.count;
-            for(int i=0; i<words.length; i++) {
-                int count = 0;
-                
-                for(int j=0; j<begin.length(); j++) {
-                    if(s.charAt(j)!=words[i].charAt(j)) 
-                        count++;
-                    if(count>=2) break;
-                }
-                
-                if(count==1 && !set.contains(words[i])) {
-                    q.add(new Node(words[i],temp.count+1));
-                    set.add(words[i]);
-                }
+    public static int dfs(String start, String target, String[] words, int value) {
+        if(start.equals(target)) {
+            answer = Math.min(answer, value);
+        }
+        for(int i=0; i<words.length; i++) {
+            if(!set.contains(words[i]) && canMove(start,words[i])) {
+                set.add(words[i]);
+                dfs(words[i], target, words, value+1);
+                set.remove(words[i]);
             }
         }
-        return 0;
+        return answer;
+    }
+    public static boolean canMove(String w1, String w2) {
+        int count = 0;
+        for(int i=0; i<w1.length(); i++) {
+            String s1 = w1.substring(i,i+1);
+            String s2 = w2.substring(i,i+1);
+            if(!s1.equals(s2)) count++;
+        }
+        return count==1;
     }
 }
