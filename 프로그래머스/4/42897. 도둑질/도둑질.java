@@ -1,22 +1,21 @@
 class Solution {
     public int solution(int[] money) {
         int answer = 0;
-        int size = money.length;
-        int[] dp1 = new int[size];
-        int[] dp2 = new int[size];
-        // 첫 번째 집 턴 경우
-        dp1[0] = money[0];
-        dp1[1] = money[0];
-        for(int i=2; i<size-1; i++) {
-            dp1[i] = Math.max(dp1[i-1], dp1[i-2]+money[i]); 
+        int n = money.length;
+        int [][] dp = new int[2][n];
+        
+        dp[1][0] = money[0];
+        dp[0][0] = 0;
+        dp[1][1] = dp[1][0];
+        dp[0][1] = money[1];
+        
+        for(int i=2; i<n-1; i++) {
+            dp[1][i] = Math.max(dp[1][i-2]+money[i], dp[1][i-1]);
         }
-        dp2[0] = 0;
-        dp2[1] = money[1];
-        // 첫 번째 집 안 턴 경우
-        for(int i=2; i<size; i++) {
-            dp2[i] = Math.max(dp2[i-1],dp2[i-2]+money[i]);
+        for(int i=2; i<n; i++) {
+            dp[0][i] = Math.max(dp[0][i-2] + money[i], dp[0][i-1]);
         }
-        answer = Math.max(dp1[size-2],dp2[size-1]);
+        answer = Math.max(dp[1][n-2], dp[0][n-1]);
         return answer;
     }
 }
