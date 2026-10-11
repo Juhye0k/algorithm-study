@@ -1,19 +1,25 @@
-import java.util.*;
+import java.util.Arrays;
+
 class Solution {
     public String solution(int[] numbers) {
-        String[] strNumbers = new String[numbers.length];
-        for(int i=0; i<numbers.length; i++) {
-            strNumbers[i] = String.valueOf(numbers[i]);
+        String[] strings = new String[numbers.length];
+
+        for (int i = 0; i < numbers.length; i++) {
+            strings[i] = String.valueOf(numbers[i]);
         }
-        Arrays.sort(strNumbers, (o1,o2)-> (o2+o1).compareTo(o1+o2));
-        if(strNumbers[0].equals("0")) {
+
+        Arrays.sort(strings, (a, b) -> (b + a).compareTo(a + b));
+
+        // 정렬 후 첫 숫자가 0이면 모두 0
+        if (strings[0].equals("0")) {
             return "0";
         }
-        StringBuilder sb = new StringBuilder();
-    
-        for(String s:strNumbers) {
-            sb.append(s);
+
+        StringBuilder answer = new StringBuilder();
+        for (String s : strings) {
+            answer.append(s);
         }
-        return sb.toString();
+
+        return answer.toString();
     }
 }
